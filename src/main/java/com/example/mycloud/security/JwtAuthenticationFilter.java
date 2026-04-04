@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Collections;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -36,15 +38,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // Проверяем валидность подписи и срока действия БЕЗ обращения к БД
         if (jwtService.validateToken(jwt)) {
             String userEmail = jwtService.extractUsername(jwt);
+            Long userId = jwtService.extractUserId(jwt);
 
             if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
 
-                // Создаем UserDetails прямо из токена
-                UserDetails userDetails = User.builder()
-                        .username(userEmail)
-                        .password("")
-                        .roles("USER")
-                        .build();
+                // Создаем CustomUserDetails прямо из токена
+                CustomUserDetails userDetails = new CustomUserDetails(userEmail, "", Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")), userId);
 
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities());

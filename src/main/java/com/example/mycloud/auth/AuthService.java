@@ -4,7 +4,7 @@ import com.example.mycloud.auth.dto.SigninRequest;
 import com.example.mycloud.auth.dto.SignupRequest;
 import com.example.mycloud.auth.dto.AuthResponse;
 import com.example.mycloud.auth.dto.UserResponse;
-import com.example.mycloud.entities.User;
+import com.example.mycloud.users.User;
 import com.example.mycloud.exceptions.UserAlreadyExists;
 import com.example.mycloud.exceptions.UserByEmailNotFound;
 import com.example.mycloud.exceptions.WrongPasswordException;

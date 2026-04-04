@@ -1,6 +1,6 @@
 package com.example.mycloud.security;
 
-import com.example.mycloud.entities.User;
+import com.example.mycloud.users.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -27,6 +27,9 @@ public class JwtService {
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
+    public Long extractUserId(String token) {
+        return extractClaim(token, claims -> claims.get("userId", Long.class));
+    }
 
     public Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
@@ -51,7 +54,7 @@ public class JwtService {
 
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
-        // Добавляем дополнительные данные в токен, если нужно
+        // Добавляем дополнительные данные в токен
         if (userDetails instanceof User) {
             User user = (User) userDetails;
             claims.put("userId", user.getUserId());

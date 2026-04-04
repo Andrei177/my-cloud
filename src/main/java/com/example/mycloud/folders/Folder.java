@@ -1,5 +1,6 @@
-package com.example.mycloud.entities;
+package com.example.mycloud.folders;
 
+import com.example.mycloud.users.User;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,7 +19,7 @@ public class Folder {
     @Column(name = "folder_id")
     private Long folderId;
 
-    @Column(name = "folder_name")
+    @Column(name = "folder_name", unique = true)
     private String folderName;
 
     @ManyToOne(fetch = FetchType.LAZY)

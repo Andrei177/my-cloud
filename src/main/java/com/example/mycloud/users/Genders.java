@@ -1,4 +1,4 @@
-package com.example.mycloud.entities;
+package com.example.mycloud.users;
 
 public enum Genders {
     MAN,

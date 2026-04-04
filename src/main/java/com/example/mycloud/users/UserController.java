@@ -1,9 +1,7 @@
-package com.example.mycloud.users.controllers;
+package com.example.mycloud.users;
 
 import com.example.mycloud.auth.dto.UserResponse;
-import com.example.mycloud.entities.User;
 import com.example.mycloud.exceptions.UserByEmailNotFound;
-import com.example.mycloud.users.UserRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;

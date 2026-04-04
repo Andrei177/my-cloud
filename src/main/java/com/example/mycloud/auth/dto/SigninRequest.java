@@ -1,12 +1,9 @@
 package com.example.mycloud.auth.dto;
 
-import com.example.mycloud.entities.Genders;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
-
-import java.time.LocalDate;
 
 @Data
 public class SigninRequest {

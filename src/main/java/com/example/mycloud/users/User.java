@@ -1,4 +1,4 @@
-package com.example.mycloud.entities;
+package com.example.mycloud.users;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
