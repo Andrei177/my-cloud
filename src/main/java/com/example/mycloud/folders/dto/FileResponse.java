@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 @Data
 @AllArgsConstructor
-public class UploadFileResponse {
+public class FileResponse {
     private Long fileId;
 
     private String fileName;

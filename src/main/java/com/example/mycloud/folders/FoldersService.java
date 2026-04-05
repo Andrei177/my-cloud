@@ -5,6 +5,7 @@ import com.example.mycloud.files.File;
 import com.example.mycloud.files.FilesRepository;
 import com.example.mycloud.folders.dto.CreateFolderRequest;
 import com.example.mycloud.folders.dto.CreateFolderResponse;
+import com.example.mycloud.folders.dto.FilesAndFoldersDto;
 import com.example.mycloud.users.User;
 import com.example.mycloud.users.UserRepository;
 import jakarta.transaction.Transactional;
@@ -17,6 +18,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -79,5 +82,30 @@ public class FoldersService {
         }catch (IOException e){
             throw new FailedUploadFileException(file.getOriginalFilename());
         }
+    }
+    public FilesAndFoldersDto getFilesFromFolder(Long folderId, Boolean includeFiles, Boolean includeFolders, Long userId){
+        if(folderId == null){
+            List<Folder> rootFolders = new ArrayList<>();
+            if(includeFolders){
+                rootFolders = foldersRepository.findRootFoldersByUserId(userId);
+            }
+            List<File> rootFiles = new ArrayList<>();
+            if(includeFiles){
+                rootFiles = filesRepository.findRootFilesByUserId(userId);
+            }
+
+            return new FilesAndFoldersDto(rootFiles, rootFolders);
+        }
+        Folder folder = foldersRepository.findById(folderId).orElseThrow(() -> new FolderNotFound(folderId));
+        List<Folder> folders = new ArrayList<>();
+        if(includeFolders){
+            folders = foldersRepository.findByParentFolder(folder);
+        }
+        List<File> files = new ArrayList<>();
+        if(includeFiles){
+            files = filesRepository.findFilesByFolder(folder);
+        }
+
+        return new FilesAndFoldersDto(files, folders);
     }
 }
