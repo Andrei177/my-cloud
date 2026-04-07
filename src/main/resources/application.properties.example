@@ -1,0 +1,14 @@
+spring.application.name=my-cloud-app
+
+spring.datasource.url=jdbc:postgresql://localhost:5432/my_cloud_app_db_name
+spring.datasource.username=username
+spring.datasource.password=username
+
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.format_sql=true
+
+jwt.secret = "secret-key"
+jwt.expiration = 86400000
+
+storage.root-path=./storage-path
