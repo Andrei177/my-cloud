@@ -1,6 +1,7 @@
 package com.example.mycloud.folders;
 
 import com.example.mycloud.files.File;
+import com.example.mycloud.files.dto.FileResponse;
 import com.example.mycloud.folders.dto.*;
 import com.example.mycloud.security.CustomUserDetails;
 import jakarta.validation.Valid;
@@ -23,7 +24,7 @@ public class FoldersController {
         this.foldersService = foldersService;
     }
 
-    @PostMapping("/")
+    @PostMapping()
     public ResponseEntity<CreateFolderResponse> createFolder(@Valid @RequestBody CreateFolderRequest createFolderRequest, @AuthenticationPrincipal CustomUserDetails userDetails) {
         Folder createdFolder = foldersService.createFolder(createFolderRequest, userDetails.getUserId());
 
@@ -42,11 +43,11 @@ public class FoldersController {
     }
 
     @GetMapping()
-    public ResponseEntity<FilesAndFoldersResponse> getFilesFromFolder(@RequestParam(value = "folderId", required = false) Long folderId, @RequestParam(value = "files", defaultValue = "true") Boolean includeFiles, @RequestParam(value = "folders", defaultValue = "true") Boolean includeFolders, @AuthenticationPrincipal CustomUserDetails userDetails) {
-        FilesAndFoldersDto filesAndFolders = foldersService.getFilesFromFolder(folderId, includeFiles, includeFolders, userDetails.getUserId());
+    public ResponseEntity<FilesAndFoldersResponse> getFilesAndFolders(@RequestParam(value = "folderId", required = false) Long folderId, @RequestParam(value = "files", defaultValue = "true") Boolean includeFiles, @RequestParam(value = "folders", defaultValue = "true") Boolean includeFolders, @AuthenticationPrincipal CustomUserDetails userDetails) {
+        FilesAndFoldersDto filesAndFolders = foldersService.getFilesAndFolders(folderId, includeFiles, includeFolders, userDetails.getUserId());
 
         List<FileResponse> fileResponseList = new ArrayList<>();
-        filesAndFolders.getFiles().forEach(file -> fileResponseList.add(new FileResponse(file.getFileId(), file.getFileName(), file.getFileSize(), file.getFileType(), file.getFolder().getFolderId(), file.getUser().getUserId(), file.getCreatedAt(), file.getUpdatedAt())));
+        filesAndFolders.getFiles().forEach(file -> fileResponseList.add(new FileResponse(file.getFileId(), file.getFileName(), file.getFileSize(), file.getFileType(), file.getFolder() == null ? null : file.getFolder().getFolderId(), file.getUser().getUserId(), file.getCreatedAt(), file.getUpdatedAt())));
 
         List<FolderResponse> folderResponseList = new ArrayList<>();
         filesAndFolders.getFolders().forEach(folder -> folderResponseList.add(new FolderResponse(folder.getFolderId(), folder.getFolderName(), folder.getUser().getUserId(), folder.getParentFolder() != null ? folder.getParentFolder().getFolderId() : null, folder.getCreatedAt(), folder.getUpdatedAt())));

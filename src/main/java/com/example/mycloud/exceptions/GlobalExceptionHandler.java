@@ -40,6 +40,22 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, String>> handleException(FailedUploadFileException e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", e.getMessage()));
     }
+    @ExceptionHandler(AccessForbiddenException.class)
+    public ResponseEntity<Map<String, String>> handleException(AccessForbiddenException e) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("error", e.getMessage()));
+    }
+    @ExceptionHandler(FileNotFound.class)
+    public ResponseEntity<Map<String, String>> handleException(FileNotFound e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
+    }
+    @ExceptionHandler(FileNotAttachedException.class)
+    public ResponseEntity<Map<String, String>> handleException(FileNotAttachedException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", e.getMessage()));
+    }
+    @ExceptionHandler(FileDownloadException.class)
+    public ResponseEntity<Map<String, String>> handleException(FileDownloadException e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", e.getMessage()));
+    }
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();

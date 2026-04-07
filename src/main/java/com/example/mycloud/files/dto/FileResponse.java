@@ -1,4 +1,4 @@
-package com.example.mycloud.folders.dto;
+package com.example.mycloud.files.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -10,8 +10,14 @@ import java.util.Optional;
 
 @Repository
 public interface FoldersRepository extends JpaRepository<Folder, Long> {
+    @Query("SELECT f FROM Folder f WHERE f.folderName = :folderName AND f.user.userId = :userId AND f.parentFolder.folderId = :parentFolderId")
+    Optional<Folder> findUserFolderByNameInParentFolder(
+            @Param("folderName") String folderName,
+            @Param("userId") Long userId,
+            @Param("parentFolderId") Long parentFolderId
+    );
     @Query("SELECT f FROM Folder f WHERE f.folderName = :folderName AND f.user.userId = :userId")
-    Optional<Folder> findByFolderNameForUser(
+    Optional<Folder> findUserFolderByNameInRoot(
             @Param("folderName") String folderName,
             @Param("userId") Long userId
     );
