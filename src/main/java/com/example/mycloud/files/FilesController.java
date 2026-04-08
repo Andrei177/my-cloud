@@ -31,7 +31,7 @@ public class FilesController {
     public ResponseEntity<FileResponse> getFileInfo(@PathVariable("fileId") Long fileId, @AuthenticationPrincipal CustomUserDetails userDetails) {
         File fileInfo = filesService.getFileInfo(fileId, userDetails.getUserId());
 
-        FileResponse fileResponse = new FileResponse(fileInfo.getFileId(), fileInfo.getFileName(), fileInfo.getFileSize(), fileInfo.getFileType(), fileInfo.getFolder().getFolderId(), userDetails.getUserId(), fileInfo.getCreatedAt(), fileInfo.getUpdatedAt());
+        FileResponse fileResponse = new FileResponse(fileInfo.getFileId(), fileInfo.getFileName(), fileInfo.getFileSize(), fileInfo.getFileType(), fileInfo.getFolder() != null ? fileInfo.getFolder().getFolderId() : null, userDetails.getUserId(), fileInfo.getCreatedAt(), fileInfo.getUpdatedAt());
 
         return ResponseEntity.status(HttpStatus.OK).body(fileResponse);
     }
@@ -48,7 +48,7 @@ public class FilesController {
     }
     @GetMapping("/{fileId}")
     public ResponseEntity<UrlResource> getFile(@PathVariable("fileId") Long fileId, @RequestParam(value = "download", defaultValue = "false") Boolean isDownload, @AuthenticationPrincipal CustomUserDetails userDetails) {
-        FileDownloadDto fileDownloadData = filesService.downloadFile(fileId, userDetails.getUserId());
+        FileDownloadDto fileDownloadData = filesService.getFile(fileId, userDetails.getUserId());
         MediaType mediaType = (fileDownloadData.getFile().getFileType() != null) ? MediaType.parseMediaType(fileDownloadData.getFile().getFileType()) : MediaType.APPLICATION_OCTET_STREAM;
         String contentDispositionHeader = "inline; filename=\"" + fileDownloadData.getFile().getFileName() + "\""; // с attachment файл будет сразу скачиваться
         if(isDownload != null && isDownload){
@@ -59,5 +59,10 @@ public class FilesController {
                 // attachment заставляет браузер скачивать файл
                 .header(HttpHeaders.CONTENT_DISPOSITION, contentDispositionHeader)
                 .body(fileDownloadData.getResource());
+    }
+    @DeleteMapping("/{fileId}")
+    public ResponseEntity<?> deleteFile(@PathVariable("fileId") Long fileId, @AuthenticationPrincipal CustomUserDetails userDetails) {
+        filesService.deleteFile(fileId, userDetails.getUserId());
+        return  ResponseEntity.noContent().build();
     }
 }

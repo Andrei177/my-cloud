@@ -6,7 +6,6 @@ import com.example.mycloud.files.FilesRepository;
 import com.example.mycloud.folders.Folder;
 import com.example.mycloud.folders.FoldersRepository;
 import com.example.mycloud.users.User;
-import jakarta.annotation.Resource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Component;
@@ -21,12 +20,12 @@ import java.nio.file.StandardCopyOption;
 import java.util.UUID;
 
 @Component
-public class FilesUploader {
+public class FilesManager {
     @Value("${storage.root-path}")
     private String rootPath;
     private final FilesRepository filesRepository;
 
-    public FilesUploader(FilesRepository filesRepository, FoldersRepository foldersRepository) {
+    public FilesManager(FilesRepository filesRepository, FoldersRepository foldersRepository) {
         this.filesRepository = filesRepository;
     }
 
@@ -55,10 +54,29 @@ public class FilesUploader {
             throw new FailedUploadFileException(file.getOriginalFilename());
         }
     }
-    public UrlResource downloadFile(String fileName) throws MalformedURLException {
+    public UrlResource downloadFile(String filePath) throws MalformedURLException {
         Path storageLocation = Paths.get(rootPath).toAbsolutePath().normalize();
         // Формируем полный путь к файлу
-        Path filePath = storageLocation.resolve(fileName).normalize();
-        return new UrlResource(filePath.toUri());
+        Path fileFullPath = storageLocation.resolve(filePath).normalize();
+        return new UrlResource(fileFullPath.toUri());
+    }
+
+    public void deleteFile(String filePath){
+        try {
+            Path storageLocation = Paths.get(rootPath).toAbsolutePath().normalize();
+            // 1. Безопасно формируем путь
+            Path fileFullPath = storageLocation.resolve(filePath).normalize();
+
+            // 2. Проверка Security (чтобы нельзя было выйти за пределы rootPath через ../)
+            if (!fileFullPath.startsWith(storageLocation)) {
+                throw new RuntimeException("Попытка доступа вне директории хранилища");
+            }
+
+            // 3. Удаляем файл (если его нет, метод просто вернет false или кинет Exception)
+            Files.deleteIfExists(fileFullPath);
+
+        } catch (IOException e) {
+            throw new RuntimeException("Ошибка при удалении файла с диска: " + filePath, e);
+        }
     }
 }

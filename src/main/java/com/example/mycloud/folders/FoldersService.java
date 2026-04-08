@@ -4,35 +4,29 @@ import com.example.mycloud.exceptions.*;
 import com.example.mycloud.files.File;
 import com.example.mycloud.files.FilesRepository;
 import com.example.mycloud.folders.dto.CreateFolderRequest;
-import com.example.mycloud.folders.dto.CreateFolderResponse;
 import com.example.mycloud.folders.dto.FilesAndFoldersDto;
 import com.example.mycloud.users.User;
 import com.example.mycloud.users.UserRepository;
-import com.example.mycloud.utils.FilesUploader;
-import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Value;
+import com.example.mycloud.utils.FilesManager;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class FoldersService {
     private final FoldersRepository foldersRepository;
     private final UserRepository userRepository;
     private final FilesRepository filesRepository;
-    private final FilesUploader filesUploader;
+    private final FilesManager filesManager;
 
-    FoldersService(FoldersRepository foldersRepository, UserRepository userRepository, FilesRepository filesRepository, FilesUploader filesUploader) {
+    FoldersService(FoldersRepository foldersRepository, UserRepository userRepository, FilesRepository filesRepository, FilesManager filesManager) {
         this.foldersRepository = foldersRepository;
         this.userRepository = userRepository;
         this.filesRepository = filesRepository;
-        this.filesUploader = filesUploader;
+        this.filesManager = filesManager;
     }
 
     public Folder createFolder(CreateFolderRequest createFolderRequest, Long userId) {
@@ -63,7 +57,7 @@ public class FoldersService {
             throw new AccessForbiddenException("Папка с id " + folder.getFolderId() + " не принадлежит пользователю " + user.getUserName());
         }
 
-        return filesUploader.uploadFile(file, folder, user);
+        return filesManager.uploadFile(file, folder, user);
     }
     public FilesAndFoldersDto getFilesAndFolders(Long folderId, Boolean includeFiles, Boolean includeFolders, Long userId){
         if(folderId == null){

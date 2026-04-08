@@ -1,6 +1,7 @@
 package com.example.mycloud.files;
 
 import com.example.mycloud.folders.Folder;
+import com.example.mycloud.users.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,4 +17,7 @@ public interface FilesRepository extends JpaRepository<File, Long> {
     List<File> findRootFilesByUserId(@Param("userId") Long userId);
 
     List<File> findFilesByFolder(Folder folder);
+
+    @Query("SELECT f from File f WHERE f.fileId = :fileId AND f.user.userId = :userId")
+    Optional<File> checkFileBelongUser(@Param("fileId") Long fileId, @Param("userId") Long userId);
 }
