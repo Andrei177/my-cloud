@@ -30,7 +30,7 @@ public class FoldersService {
     }
 
     public Folder createFolder(CreateFolderRequest createFolderRequest, Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFound(userId));
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserByIdNotFound(userId));
         Optional<Folder> candidate;
         if(createFolderRequest.getParentFolderId() == null){
             candidate = foldersRepository.findUserFolderByNameInRoot(createFolderRequest.getFolderName(), userId);
@@ -52,7 +52,7 @@ public class FoldersService {
     }
     public File uploadFileToFolder(MultipartFile file, Long folderId, Long userId) {
         Folder folder = foldersRepository.findById(folderId).orElseThrow(() -> new FolderNotFound(folderId));
-        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFound(userId));
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserByIdNotFound(userId));
         if(!folder.getUser().getUserId().equals(userId)) {
             throw new AccessForbiddenException("Папка с id " + folder.getFolderId() + " не принадлежит пользователю " + user.getUserName());
         }

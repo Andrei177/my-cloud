@@ -17,12 +17,8 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, String>> handleException(UserAlreadyExists e) {
         return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("error", e.getMessage()));
     }
-    @ExceptionHandler(UserByEmailNotFound.class)
-    public ResponseEntity<Map<String, String>> handleException(UserByEmailNotFound e) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
-    }
-    @ExceptionHandler(UserNotFound.class)
-    public ResponseEntity<Map<String, String>> handleException(UserNotFound e) {
+    @ExceptionHandler({UserByEmailNotFound.class, UserByIdNotFound.class, UserNotFound.class})
+    public ResponseEntity<Map<String, String>> handleException(UserByIdNotFound e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
     }
     @ExceptionHandler(WrongPasswordException.class)
@@ -60,6 +56,14 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DeleteFileFromDiskException.class)
     public ResponseEntity<Map<String, String>> handleException(DeleteFileFromDiskException e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Map.of("error", e.getMessage()));
+    }
+    @ExceptionHandler(ClientAppNotFound.class)
+    public ResponseEntity<Map<String, String>> handleException(ClientAppNotFound e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
+    }
+    @ExceptionHandler(OAuthException.class)
+    public ResponseEntity<Map<String, String>> handleException(OAuthException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("error", e.getMessage()));
     }
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidationExceptions(MethodArgumentNotValidException ex) {

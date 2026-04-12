@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://thymeleaf.org">
+<head>
+    <title>Авторизация</title>
+    <style>
+        .container { max-width: 400px; margin: 100px auto; padding: 20px; }
+        input { width: 100%; padding: 10px; margin: 10px 0; }
+        button { width: 100%; padding: 10px; background: #007bff; color: white; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Вход в облачное хранилище</h2>
+    <p>Приложение <strong th:text="${clientName}">Название приложения</strong> запрашивает доступ</p>
+
+    <form method="post" action="/oauth/authorize">
+        <input type="hidden" name="clientId" th:value="${clientId}">
+        <input type="hidden" name="redirectUri" th:value="${redirectUri}">
+        <input type="hidden" name="state" th:value="${state}">
+        <input type="hidden" name="responseType" value="code">
+
+        <div>
+            <label>Email:</label>
+            <input type="text" name="userEmail" required>
+        </div>
+        <div>
+            <label>Пароль:</label>
+            <input type="password" name="password" required>
+        </div>
+        <button type="submit">Разрешить доступ</button>
+    </form>
+</div>
+</body>
+</html>

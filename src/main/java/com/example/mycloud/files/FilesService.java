@@ -33,7 +33,7 @@ public class FilesService {
     }
 
     public File uploadFileToRoot(MultipartFile file, Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFound(userId));
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserByIdNotFound(userId));
 
         return filesManager.uploadFile(file, null, user);
     }
