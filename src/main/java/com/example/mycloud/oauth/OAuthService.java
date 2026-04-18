@@ -2,6 +2,7 @@ package com.example.mycloud.oauth;
 
 import com.example.mycloud.exceptions.*;
 import com.example.mycloud.oauth.dto.ClientRegisterDto;
+import com.example.mycloud.oauth.dto.ClientRegisterResponseDto;
 import com.example.mycloud.oauth.dto.OAuthForm;
 import com.example.mycloud.oauth.dto.TokenRequest;
 import com.example.mycloud.oauth.entities.OAuthClient;
@@ -61,10 +62,12 @@ public class OAuthService {
         return oAuthCodeRepository.save(newCode);
     }
 
-    public OAuthClient registerClient(ClientRegisterDto clientData) {
-        OAuthClient client = new OAuthClient(clientData.getClientId(), passwordEncoder.encode(clientData.getClientSecret()), clientData.getClientName(), clientData.getRedirectUri(), OAuthClientStatus.ACTIVE, LocalDateTime.now());
+    public ClientRegisterResponseDto registerClient(ClientRegisterDto clientData) {
+        String generatedClientSecret = UUID.randomUUID().toString();
+        String generatedClientId = UUID.randomUUID().toString();
+        OAuthClient client = new OAuthClient(generatedClientId, passwordEncoder.encode(generatedClientSecret), clientData.getClientName(), clientData.getRedirectUri(), OAuthClientStatus.ACTIVE, LocalDateTime.now());
         oAuthClientRepository.save(client);
-        return client;
+        return new ClientRegisterResponseDto(client, generatedClientSecret);
     }
 
     public String exchangeCodeForToken(TokenRequest tokenRequest){

@@ -1,6 +1,7 @@
 package com.example.mycloud.oauth;
 
 import com.example.mycloud.oauth.dto.ClientRegisterDto;
+import com.example.mycloud.oauth.dto.ClientRegisterResponseDto;
 import com.example.mycloud.oauth.dto.OAuthForm;
 import com.example.mycloud.oauth.dto.TokenRequest;
 import com.example.mycloud.oauth.entities.OAuthClient;
@@ -56,7 +57,7 @@ public class OAuthController {
     @PostMapping("/clients")
     @ResponseBody
     public ResponseEntity<Map<String, String>> registerClientApp(@RequestBody ClientRegisterDto clientData) {
-        oAuthService.registerClient(clientData);
-        return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("clientId", clientData.getClientId(), "redirectUri", clientData.getRedirectUri()));
+        ClientRegisterResponseDto registerResponse = oAuthService.registerClient(clientData);
+        return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("clientId", registerResponse.getClient().getClientId(), "clientSecret", registerResponse.getClientSecret(), "redirectUri", registerResponse.getClient().getRedirectUri()));
     }
 }
