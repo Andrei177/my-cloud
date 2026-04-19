@@ -1,7 +1,7 @@
 package com.example.mycloud.oauth;
 
 import com.example.mycloud.exceptions.*;
-import com.example.mycloud.oauth.dto.ClientRegisterDto;
+import com.example.mycloud.oauth.dto.ClientRegisterRequest;
 import com.example.mycloud.oauth.dto.ClientRegisterResponseDto;
 import com.example.mycloud.oauth.dto.OAuthForm;
 import com.example.mycloud.oauth.dto.TokenRequest;
@@ -39,7 +39,7 @@ public class OAuthService {
         OAuthClient clientApp = oAuthClientRepository.findById(clientId).orElseThrow(() -> new ClientAppNotFound("Приложения " +  clientId + " нет в базе данных клиентов"));
 
         if(!clientApp.getRedirectUri().equals(redirectUri)){
-            throw new OAuthException("переданный URL для редиректа не совпадает с URL в БД");
+            throw new OAuthException("Переданный URL для редиректа не совпадает с URL в БД");
         };
         if(clientApp.getStatus().equals(OAuthClientStatus.BLOCKED)){
             throw new OAuthException("Приложение заблокировано");
@@ -62,7 +62,7 @@ public class OAuthService {
         return oAuthCodeRepository.save(newCode);
     }
 
-    public ClientRegisterResponseDto registerClient(ClientRegisterDto clientData) {
+    public ClientRegisterResponseDto registerClient(ClientRegisterRequest clientData) {
         String generatedClientSecret = UUID.randomUUID().toString();
         String generatedClientId = UUID.randomUUID().toString();
         OAuthClient client = new OAuthClient(generatedClientId, passwordEncoder.encode(generatedClientSecret), clientData.getClientName(), clientData.getRedirectUri(), OAuthClientStatus.ACTIVE, LocalDateTime.now());

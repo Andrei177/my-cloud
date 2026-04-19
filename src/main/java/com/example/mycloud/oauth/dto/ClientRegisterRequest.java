@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 
 @Data
-public class ClientRegisterDto {
+public class ClientRegisterRequest {
     @NotEmpty(message = "clientName не может быть пустым")
     private String clientName;
 

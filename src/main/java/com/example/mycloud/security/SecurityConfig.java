@@ -28,6 +28,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/v1/auth/**").permitAll()
                         .requestMatchers("/api/v1/oauth/**").permitAll()
+                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                         .requestMatchers("/api/v1/public/**").permitAll()
                         .requestMatchers("/callback").permitAll() // ТОЛЬКО ДЛЯ ТЕСТА, ПОТОМ УДАЛИТЬ
                         .anyRequest().authenticated()

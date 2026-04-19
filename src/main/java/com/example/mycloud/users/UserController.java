@@ -2,6 +2,10 @@ package com.example.mycloud.users;
 
 import com.example.mycloud.auth.dto.UserResponse;
 import com.example.mycloud.exceptions.UserByEmailNotFound;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,7 +24,15 @@ public class UserController {
     public ResponseEntity<String> getGreeting(){
         return ResponseEntity.status(200).body("Hello World!!!");
     }
-    @GetMapping("/me")
+
+    @Operation(
+            summary = "Получение информации текущего пользователя"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Успешное получение данных пользователя"),
+            @ApiResponse(responseCode = "404", description = "Пользователь не найден")
+    })
+    @GetMapping(value = "/me", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<UserResponse> getMe(@AuthenticationPrincipal UserDetails user){
         User userInfo = userRepository.findByUserEmail(user.getUsername()).orElseThrow(() -> new UserByEmailNotFound(user.getUsername()));
         UserResponse userResponse = new UserResponse(userInfo.getUserId(), userInfo.getUserBirthday(), userInfo.getUserName(), userInfo.getUserEmail(), userInfo.getUserGender(), userInfo.getCreatedAt(), userInfo.getUpdatedAt());

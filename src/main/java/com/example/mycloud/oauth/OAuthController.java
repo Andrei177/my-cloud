@@ -1,19 +1,22 @@
 package com.example.mycloud.oauth;
 
-import com.example.mycloud.oauth.dto.ClientRegisterDto;
-import com.example.mycloud.oauth.dto.ClientRegisterResponseDto;
-import com.example.mycloud.oauth.dto.OAuthForm;
-import com.example.mycloud.oauth.dto.TokenRequest;
+import com.example.mycloud.oauth.dto.*;
 import com.example.mycloud.oauth.entities.OAuthClient;
 import com.example.mycloud.oauth.entities.OAuthCode;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.headers.Header;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Map;
 
 @Controller
 @RequestMapping("/api/v1/oauth")
@@ -24,6 +27,14 @@ public class OAuthController {
         this.oAuthService = oAuthService;
     }
 
+    @Operation(
+            summary = "Получение страницы для аутентификации пользователя",
+            description = "Страница запрашивается внешним приложением при попытке пользователя входа во внешнем приложении через облачное хранилище"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Успешная проверка clientId и успешное получение страницы для аутентификации", content = @Content(mediaType = "text/html")),
+            @ApiResponse(responseCode = "400", description = "Переданный URL для редиректа не совпадает с URL в БД или client приложению заблокирован OAuth сценарий", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
+    })
     @GetMapping("/authorize")
     public String getAuthorizePage(@RequestParam("client_id") String clientId, @RequestParam("redirect_uri") String redirectUri,  @RequestParam(value = "state", required = false) String state, Model model) {
         OAuthClient clientApp = oAuthService.checkClient(clientId, redirectUri);
@@ -34,6 +45,26 @@ public class OAuthController {
         return "oauth-login";
     }
 
+    @Operation(
+            summary = "Аутентификация пользователя",
+            description = "Проверка данных пользователя во время аутентификации"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "303",
+                    description = "Редирект на redirect-uri с кодом авторизации",
+                    headers = {
+                            @Header(
+                                    name = "Location",
+                                    description = "URL для редиректа с параметрами code и state",
+                                    schema = @Schema(
+                                            type = "string",
+                                            example = "https://client.com/callback?code=abc123&state=xyz"
+                                    )
+                            )
+                    }
+            )
+    })
     @PostMapping("/authorize")
     @ResponseBody
     public ResponseEntity<?> getCode(@ModelAttribute OAuthForm form) {
@@ -47,17 +78,33 @@ public class OAuthController {
         return new ResponseEntity<>(headers, HttpStatus.SEE_OTHER);
     }
 
-    @PostMapping("/token")
+    @Operation(
+            summary = "Обмен кода на токен",
+            description = "Происходит обмен кода авторизации, полученного после аутентификации пользователя, на токен доступа к облачному хранилищу от имени аутентифицированного пользователя"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Успешный обмен кода на токен"),
+            @ApiResponse(responseCode = "400", description = "Неверный grant_type или Неверный пароль или Срок действия кода истек", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "401", description = "Пользователь для которого был сгенерирова код не найден", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @PostMapping(value = "/token", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public ResponseEntity<Map<String, String>> exchangeCodeForToken(@RequestBody TokenRequest tokenRequest) {
+    public ResponseEntity<TokenResponse> exchangeCodeForToken(@RequestBody TokenRequest tokenRequest) {
         String token = oAuthService.exchangeCodeForToken(tokenRequest);
-        return ResponseEntity.status(HttpStatus.OK).body(Map.of("accessToken", token));
+        return ResponseEntity.status(HttpStatus.OK).body(new TokenResponse(token));
     }
 
+    @Operation(
+            summary = "Регистрация внещнего приложения для осуществления OAuth сценария",
+            description = "Внешнее приложение передаёт clientName и redirectUri"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Клиент для OAuth сценария успешно создан"),
+    })
     @PostMapping("/clients")
     @ResponseBody
-    public ResponseEntity<Map<String, String>> registerClientApp(@RequestBody ClientRegisterDto clientData) {
+    public ResponseEntity<ClientRegisterResponse> registerClientApp(@RequestBody ClientRegisterRequest clientData) {
         ClientRegisterResponseDto registerResponse = oAuthService.registerClient(clientData);
-        return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("clientId", registerResponse.getClient().getClientId(), "clientSecret", registerResponse.getClientSecret(), "redirectUri", registerResponse.getClient().getRedirectUri()));
+        return ResponseEntity.status(HttpStatus.CREATED).body(new ClientRegisterResponse(registerResponse.getClient().getClientId(), registerResponse.getClientSecret(), registerResponse.getClient().getRedirectUri()));
     }
 }
