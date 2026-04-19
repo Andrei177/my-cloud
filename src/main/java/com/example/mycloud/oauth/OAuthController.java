@@ -3,7 +3,10 @@ package com.example.mycloud.oauth;
 import com.example.mycloud.oauth.dto.*;
 import com.example.mycloud.oauth.entities.OAuthClient;
 import com.example.mycloud.oauth.entities.OAuthCode;
+import com.example.mycloud.utils.OperationGroups;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.extensions.Extension;
+import io.swagger.v3.oas.annotations.extensions.ExtensionProperty;
 import io.swagger.v3.oas.annotations.headers.Header;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -29,7 +32,10 @@ public class OAuthController {
 
     @Operation(
             summary = "Получение страницы для аутентификации пользователя",
-            description = "Страница запрашивается внешним приложением при попытке пользователя входа во внешнем приложении через облачное хранилище"
+            description = "Страница запрашивается внешним приложением при попытке пользователя входа во внешнем приложении через облачное хранилище",
+            extensions = @Extension(properties = {
+                    @ExtensionProperty(name = "x-operation-group", value = OperationGroups.OAUTH)
+            })
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Успешная проверка clientId и успешное получение страницы для аутентификации", content = @Content(mediaType = "text/html")),
@@ -47,7 +53,10 @@ public class OAuthController {
 
     @Operation(
             summary = "Аутентификация пользователя",
-            description = "Проверка данных пользователя во время аутентификации"
+            description = "Проверка данных пользователя во время аутентификации",
+            extensions = @Extension(properties = {
+                    @ExtensionProperty(name = "x-operation-group", value = OperationGroups.OAUTH)
+            })
     )
     @ApiResponses(value = {
             @ApiResponse(
@@ -80,7 +89,10 @@ public class OAuthController {
 
     @Operation(
             summary = "Обмен кода на токен",
-            description = "Происходит обмен кода авторизации, полученного после аутентификации пользователя, на токен доступа к облачному хранилищу от имени аутентифицированного пользователя"
+            description = "Происходит обмен кода авторизации, полученного после аутентификации пользователя, на токен доступа к облачному хранилищу от имени аутентифицированного пользователя",
+            extensions = @Extension(properties = {
+                    @ExtensionProperty(name = "x-operation-group", value = OperationGroups.OAUTH)
+            })
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Успешный обмен кода на токен"),
@@ -96,7 +108,10 @@ public class OAuthController {
 
     @Operation(
             summary = "Регистрация внещнего приложения для осуществления OAuth сценария",
-            description = "Внешнее приложение передаёт clientName и redirectUri"
+            description = "Внешнее приложение передаёт clientName и redirectUri",
+            extensions = @Extension(properties = {
+                    @ExtensionProperty(name = "x-operation-group", value = OperationGroups.OAUTH)
+            })
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Клиент для OAuth сценария успешно создан"),

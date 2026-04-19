@@ -4,7 +4,10 @@ import com.example.mycloud.files.File;
 import com.example.mycloud.files.dto.FileResponse;
 import com.example.mycloud.folders.dto.*;
 import com.example.mycloud.security.CustomUserDetails;
+import com.example.mycloud.utils.OperationGroups;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.extensions.Extension;
+import io.swagger.v3.oas.annotations.extensions.ExtensionProperty;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -33,7 +36,10 @@ public class FoldersController {
 
     @Operation(
             summary = "Создание папки",
-            description = "Пользователь создаёт папку у себя в аккаунте"
+            description = "Пользователь создаёт папку у себя в аккаунте",
+            extensions = @Extension(properties = {
+                    @ExtensionProperty(name = "x-operation-group", value = OperationGroups.CREATE_FILES)
+            })
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Успешное создание папки"),
@@ -50,7 +56,10 @@ public class FoldersController {
 
     @Operation(
             summary = "Загрузка файла в папку",
-            description = "Загрузка файла в папку с folderId"
+            description = "Загрузка файла в папку с folderId",
+            extensions = @Extension(properties = {
+                    @ExtensionProperty(name = "x-operation-group", value = OperationGroups.CREATE_FILES)
+            })
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Успешное создание папки"),
@@ -68,7 +77,10 @@ public class FoldersController {
 
     @Operation(
             summary = "Получение файлов и папок пользователя",
-            description = "Получение информации о файлах или/и папках пользователя по folderId (может быть null, тогда будут запрашиваться файлы и папки из корня)"
+            description = "Получение информации о файлах или/и папках пользователя по folderId (может быть null, тогда будут запрашиваться файлы и папки из корня)",
+            extensions = @Extension(properties = {
+                    @ExtensionProperty(name = "x-operation-group", value = OperationGroups.READ_FILES_INFO)
+            })
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Успешное получение информации о файлах и папках"),
