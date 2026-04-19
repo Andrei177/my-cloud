@@ -2,7 +2,10 @@ package com.example.mycloud.users;
 
 import com.example.mycloud.auth.dto.UserResponse;
 import com.example.mycloud.exceptions.UserByEmailNotFound;
+import com.example.mycloud.utils.OperationGroups;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.extensions.Extension;
+import io.swagger.v3.oas.annotations.extensions.ExtensionProperty;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.MediaType;
@@ -26,7 +29,10 @@ public class UserController {
     }
 
     @Operation(
-            summary = "Получение информации текущего пользователя"
+            summary = "Получение информации текущего пользователя",
+            extensions = @Extension(properties = {
+                    @ExtensionProperty(name = "x-operation-group", value = OperationGroups.READ_USER_INFO)
+            })
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Успешное получение данных пользователя"),

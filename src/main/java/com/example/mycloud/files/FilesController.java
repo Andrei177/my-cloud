@@ -5,7 +5,10 @@ import com.example.mycloud.exceptions.FileNotAttachedException;
 import com.example.mycloud.files.dto.FileDownloadDto;
 import com.example.mycloud.files.dto.FileResponse;
 import com.example.mycloud.security.CustomUserDetails;
+import com.example.mycloud.utils.OperationGroups;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.extensions.Extension;
+import io.swagger.v3.oas.annotations.extensions.ExtensionProperty;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -35,14 +38,17 @@ public class FilesController {
 
     @Operation(
             summary = "Получение информации о файле",
-            description = "По fileId запрашивается метаинформация о файле"
+            description = "По fileId запрашивается метаинформация о файле",
+            extensions = @Extension(properties = {
+                    @ExtensionProperty(name = "x-operation-group", value = OperationGroups.READ_FILES_INFO)
+            })
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Успешное получение информации о файле"),
             @ApiResponse(responseCode = "403", description = "У пользователя нет доступа к этому файлу", content = @Content(mediaType = "application/json", schema = @Schema(contentSchema = ErrorResponse.class))),
             @ApiResponse(responseCode = "404", description = "Файл не найден", content = @Content(mediaType = "application/json", schema = @Schema(contentSchema = ErrorResponse.class)))
     })
-    @GetMapping(value = "/info/{fileId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/{fileId}/info", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<FileResponse> getFileInfo(@PathVariable("fileId") Long fileId, @AuthenticationPrincipal CustomUserDetails userDetails) {
         File fileInfo = filesService.getFileInfo(fileId, userDetails.getUserId());
 
@@ -53,7 +59,10 @@ public class FilesController {
 
     @Operation(
             summary = "Загрузка файла в корень облачного хранилища",
-            description = "Загрузка файла в корень облачного хранилища, а не в какую-то папку"
+            description = "Загрузка файла в корень облачного хранилища, а не в какую-то папку",
+            extensions = @Extension(properties = {
+                    @ExtensionProperty(name = "x-operation-group", value = OperationGroups.CREATE_FILES)
+            })
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Успешная загрузка"),
@@ -73,7 +82,10 @@ public class FilesController {
 
     @Operation(
             summary = "Запрос файла для отображения или для скачивания",
-            description = "В зависимости о параметра запроса download результатом запроса будет либо скаычивание файла, либо отображение в браузере"
+            description = "В зависимости о параметра запроса download результатом запроса будет либо скаычивание файла, либо отображение в браузере",
+            extensions = @Extension(properties = {
+                    @ExtensionProperty(name = "x-operation-group", value = OperationGroups.DOWNLOAD_FILES)
+            })
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Успешное получение файла для скачивания или для отображения"),
@@ -98,7 +110,10 @@ public class FilesController {
 
     @Operation(
             summary = "Удаление файла",
-            description = "Удаление файла по fileId"
+            description = "Удаление файла по fileId",
+            extensions = @Extension(properties = {
+                    @ExtensionProperty(name = "x-operation-group", value = OperationGroups.DELETE_FILES)
+            })
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Успешное удаление файла"),
