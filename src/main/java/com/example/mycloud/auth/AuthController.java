@@ -29,7 +29,8 @@ public class AuthController {
 
     @Operation(
             summary = "Регистрация",
-            description = "Пользователь передаёт данные для регистрации"
+            description = "Пользователь передаёт данные для регистрации",
+            security = {}
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Успешная регистрация"),
@@ -44,7 +45,8 @@ public class AuthController {
 
     @Operation(
             summary = "Вход",
-            description = "Пользователь передаёт данные для входа в аккаунт облачного хранилища"
+            description = "Пользователь передаёт данные для входа в аккаунт облачного хранилища",
+            security = {}
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Успешный вход"),

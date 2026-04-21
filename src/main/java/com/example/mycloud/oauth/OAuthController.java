@@ -35,7 +35,8 @@ public class OAuthController {
             description = "Страница запрашивается внешним приложением при попытке пользователя входа во внешнем приложении через облачное хранилище",
             extensions = @Extension(properties = {
                     @ExtensionProperty(name = "x-operation-group", value = OperationGroups.OAUTH)
-            })
+            }),
+            security = {}
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Успешная проверка clientId и успешное получение страницы для аутентификации", content = @Content(mediaType = "text/html")),
@@ -56,7 +57,8 @@ public class OAuthController {
             description = "Проверка данных пользователя во время аутентификации",
             extensions = @Extension(properties = {
                     @ExtensionProperty(name = "x-operation-group", value = OperationGroups.OAUTH)
-            })
+            }),
+            security = {}
     )
     @ApiResponses(value = {
             @ApiResponse(
@@ -92,7 +94,8 @@ public class OAuthController {
             description = "Происходит обмен кода авторизации, полученного после аутентификации пользователя, на токен доступа к облачному хранилищу от имени аутентифицированного пользователя",
             extensions = @Extension(properties = {
                     @ExtensionProperty(name = "x-operation-group", value = OperationGroups.OAUTH)
-            })
+            }),
+            security = {}
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Успешный обмен кода на токен"),
