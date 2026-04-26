@@ -12,3 +12,5 @@ jwt.secret = "secret-key"
 jwt.expiration = 86400000
 
 storage.root-path=./storage-path
+
+internal.auth.token=internal-auth-token

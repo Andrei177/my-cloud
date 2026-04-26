@@ -69,7 +69,7 @@ public class FilesController {
             @ApiResponse(responseCode = "400", description = "Не прикреплён файл для загрузки", content = @Content(mediaType = "application/json", schema = @Schema(contentSchema = ErrorResponse.class))),
     })
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<FileResponse> uploadFileToRoot(@RequestParam(value = "file", required = false) MultipartFile file, @AuthenticationPrincipal CustomUserDetails userDetails) {
+    public ResponseEntity<FileResponse> uploadFileToRoot(@RequestParam(value = "file") MultipartFile file, @AuthenticationPrincipal CustomUserDetails userDetails) {
         if(file == null){
             throw new FileNotAttachedException("Вы не прикрепили файл");
         }
