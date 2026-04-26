@@ -21,7 +21,7 @@ public class InternalAuthFilter extends OncePerRequestFilter {
             "/api/v1/auth/",
             "/api/v1/oauth/authorize",
             "/api/v1/oauth/token",
-            "/v3/api-docs/",
+            "/v3/api-docs",
             "/swagger-ui/",
             "/swagger-ui.html",
             "/api/v1/public/",
