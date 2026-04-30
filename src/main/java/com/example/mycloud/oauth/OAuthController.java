@@ -100,7 +100,7 @@ public class OAuthController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Успешный обмен кода на токен"),
             @ApiResponse(responseCode = "400", description = "Неверный grant_type или Неверный пароль или Срок действия кода истек", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "401", description = "Пользователь для которого был сгенерирова код не найден", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
+            @ApiResponse(responseCode = "401", description = "Пользователь для которого был сгенерирован код не найден", content = @Content(mediaType = "application/json", schema = @Schema(implementation = ErrorResponse.class)))
     })
     @PostMapping(value = "/token", produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
@@ -111,10 +111,10 @@ public class OAuthController {
 
     @Operation(
             summary = "Регистрация внещнего приложения для осуществления OAuth сценария",
-            description = "Внешнее приложение передаёт clientName и redirectUri",
-            extensions = @Extension(properties = {
-                    @ExtensionProperty(name = "x-operation-group", value = OperationGroups.OAUTH)
-            })
+            description = "Внешнее приложение передаёт clientName и redirectUri"
+//            extensions = @Extension(properties = {
+//                    @ExtensionProperty(name = "x-operation-group", value = OperationGroups.OAUTH)
+//            })
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Клиент для OAuth сценария успешно создан"),
