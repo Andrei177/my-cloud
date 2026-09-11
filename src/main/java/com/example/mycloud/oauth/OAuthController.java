@@ -81,7 +81,11 @@ public class OAuthController {
     public ResponseEntity<?> getCode(@ModelAttribute OAuthForm form) {
         OAuthCode code = oAuthService.getCode(form);
 
-        String targetUrl = String.format("%s?code=%s&state=%s", form.redirectUri(), code.getCode(), form.state() != null ? form.state() : "");
+        String targetUrl = String.format(
+                "%s?code=%s&state=%s",
+                form.redirectUri(),
+                code.getCode(),
+                form.state() != null ? form.state() : "");
 
         HttpHeaders headers = new HttpHeaders();
         headers.add(HttpHeaders.LOCATION, targetUrl);

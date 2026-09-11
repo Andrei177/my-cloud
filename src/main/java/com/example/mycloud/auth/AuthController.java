@@ -3,7 +3,10 @@ package com.example.mycloud.auth;
 import com.example.mycloud.auth.dto.SigninRequest;
 import com.example.mycloud.auth.dto.SignupRequest;
 import com.example.mycloud.auth.dto.AuthResponse;
+import com.example.mycloud.utils.OperationGroups;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.extensions.Extension;
+import io.swagger.v3.oas.annotations.extensions.ExtensionProperty;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -30,6 +33,9 @@ public class AuthController {
     @Operation(
             summary = "Регистрация",
             description = "Пользователь передаёт данные для регистрации",
+            extensions = @Extension(properties = {
+                    @ExtensionProperty(name = "x-operation-group", value = OperationGroups.AUTH)
+            }),
             security = {}
     )
     @ApiResponses(value = {
@@ -46,6 +52,9 @@ public class AuthController {
     @Operation(
             summary = "Вход",
             description = "Пользователь передаёт данные для входа в аккаунт облачного хранилища",
+            extensions = @Extension(properties = {
+                    @ExtensionProperty(name = "x-operation-group", value = OperationGroups.AUTH)
+            }),
             security = {}
     )
     @ApiResponses(value = {

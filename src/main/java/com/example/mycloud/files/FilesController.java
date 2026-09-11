@@ -44,9 +44,18 @@ public class FilesController {
             })
     )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Успешное получение информации о файле"),
-            @ApiResponse(responseCode = "403", description = "У пользователя нет доступа к этому файлу", content = @Content(mediaType = "application/json", schema = @Schema(contentSchema = ErrorResponse.class))),
-            @ApiResponse(responseCode = "404", description = "Файл не найден", content = @Content(mediaType = "application/json", schema = @Schema(contentSchema = ErrorResponse.class)))
+            @ApiResponse(responseCode = "200",
+                    description = "Успешное получение информации о файле"),
+            @ApiResponse(responseCode = "403",
+                    description = "У пользователя нет доступа к этому файлу",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(contentSchema = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404",
+                    description = "Файл не найден",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(contentSchema = ErrorResponse.class)))
     })
     @GetMapping(value = "/{fileId}/info", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<FileResponse> getFileInfo(@PathVariable("fileId") Long fileId, @AuthenticationPrincipal CustomUserDetails userDetails) {
